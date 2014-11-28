@@ -18,8 +18,7 @@ $searchdefs ['FormFields'] = array (
     ),
     'advanced_search' => array (
       'name' => array('name'=>'name','query_type'=>'default'),
-      'sf_module' => array('name'=>'sf_module','query_type'=>'default'),
-      'scenario_name' => array('name'=>'scenario_name','query_type'=>'default'),
+      'list_name' => array('name'=>'list_name','query_type'=>'default'),
     ),
   ),
 );

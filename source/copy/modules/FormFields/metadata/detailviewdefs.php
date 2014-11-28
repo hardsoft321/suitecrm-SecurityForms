@@ -26,8 +26,7 @@ $viewdefs ['FormFields'] = array (  'DetailView' =>
 
     'panels' => array (
       'lbl_information' => array (
-        array('sf_module', 'name'),
-        array('scenario_name', ''),
+        array('name', 'list_name'),
       ),
     ),
   ),

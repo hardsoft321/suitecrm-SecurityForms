@@ -20,7 +20,6 @@ $mod_strings = array (
 'LBL_EXPORT_NAME' => 'Field',
 'LBL_EXPORT_MODULE' => 'Module',
 
-'LBL_SCENARIO' => 'Scenario',
-'LBL_LIST_SCENARIO' => 'Scenario',
+'LBL_LIST' => 'List',
 );
 ?>

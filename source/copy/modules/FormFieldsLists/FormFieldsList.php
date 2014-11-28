@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
-class FormField extends SugarBean {
+class FormFieldsList extends SugarBean {
 
     var $id;
     var $date_entered;
@@ -12,14 +12,16 @@ class FormField extends SugarBean {
     var $modified_by_name;
     var $name;
 
-    var $table_name = "form_fields";
-    var $object_name = "FormField";
-    var $module_dir = 'FormFields';
+    var $table_name = "form_fields_lists";
+    var $object_name = "FormFieldsList";
+    var $module_dir = 'FormFieldsLists';
     var $importable = true;
     var $new_schema = true;
 
-    public $list_id;
-    public $list_name;
+    public $list_type;
+    public $parent_id;
+    public $parent_type;
+    public $parent_name;
 
     function bean_implements($interface){
         switch($interface){
@@ -27,12 +29,12 @@ class FormField extends SugarBean {
         }
         return false;
     }
-    
+
     /**
-	 * @see SugarBean::get_summary_text()
-	 */
-	public function get_summary_text()
-	{
-		return "$this->name";
-	}
+     * @see SugarBean::get_summary_text()
+     */
+    public function get_summary_text()
+    {
+        return "$this->name";
+    }
 }

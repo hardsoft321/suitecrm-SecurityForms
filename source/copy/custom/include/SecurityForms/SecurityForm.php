@@ -11,15 +11,19 @@ class SecurityForm {
      * По умолчанию скрывать всю форму
      */
     const MODE_DEFAULT_DISABLED = 1;
-    
+
     /**
      * По умолчанию показывать всю форму
      */
     const MODE_DEFAULT_ENABLED = 2;
 
-    private $mode = self::MODE_DEFAULT_ENABLED;
+    private $fieldsMode = self::MODE_DEFAULT_ENABLED;
     private $enabledFields = array();
     private $disabledFields = array();
+    private $relationshipsMode = self::MODE_DEFAULT_ENABLED;
+    private $enabledRelationships = array();
+    private $disabledRelationships = array();
+    private $bean;
 
     public function __construct() {
     }
@@ -33,23 +37,51 @@ class SecurityForm {
     }
 
     protected function getDisabledFields() {
-        return $this->enabledFields;
+        return $this->disabledFields;
     }
 
     protected function setDisabledFields($fields) {
-        $this->enabledFields = $fields;
+        $this->disabledFields = $fields;
     }
 
-    public function setDefaultEnabledMode() {
-        $this->mode = self::MODE_DEFAULT_ENABLED;
+    protected function getDisabledRelationships() {
+        return $this->disabledRelationships;
     }
 
-    public function setDefaultDisabledMode() {
-        $this->mode = self::MODE_DEFAULT_DISABLED;
+    protected function setDisabledRelationships($relationships) {
+        $this->disabledRelationships = $relationships;
     }
 
-    public function getMode() {
-        return $this->mode;
+    protected function getEnabledRelationships() {
+        return $this->enabledRelationships;
+    }
+
+    protected function setEnabledRelationships($relationships) {
+        $this->enabledRelationships = $relationships;
+    }
+
+    public function setDefaultFieldsMode($mode) {
+        $this->fieldsMode = $mode;
+    }
+
+    public function getFieldsMode() {
+        return $this->fieldsMode;
+    }
+
+    public function setDefaultRelationshipsMode($mode) {
+        $this->relationshipsMode = $mode;
+    }
+
+    public function getRelationshipsMode() {
+        return $this->relationshipsMode;
+    }
+
+    public function setBean($bean) {
+        $this->bean = $bean;
+    }
+
+    public function getBean() {
+        return $this->bean;
     }
 
     /**
@@ -63,12 +95,16 @@ class SecurityForm {
     }
 
     public function getAfterEditView() {
-        if($this->mode == self::MODE_DEFAULT_ENABLED) {
-            //TODO: realize getDisableFieldsJs
+        $bean = $this->loadBeanFromRequest();
+        if($bean) {
+            $this->setBean($bean);
+        }
+        if($this->fieldsMode == self::MODE_DEFAULT_ENABLED) {
+            //TODO: realize MODE_DEFAULT_ENABLED support
             return '';
         }
         $enabledFields = array();
-        if($this->mode == self::MODE_DEFAULT_DISABLED) {
+        if($this->fieldsMode == self::MODE_DEFAULT_DISABLED) {
             $enabledFields = $this->getEnabledFields();
         }
         return $this->getStyle()
@@ -79,23 +115,66 @@ class SecurityForm {
     /**
      * Хук на событие before_save сохранения бина.
      * Отменяет изменения в полях.
+     * Если поле является связью с другим бином, оно может быть изменено через связь.
+     * В таком случае поле будет изменено, а в таблицу аудита не будет записано изменение.
+     * Поэтому нужно использовать также хук beforeRelationshipSave.
      */
     public function beforeSave($bean, $event) {
-        /*$enabledFields = $this->getEnabledFields();
-        $diff = $bean->db->getDataChanges($bean);
-        foreach($diff as $changes) {
-            $field = $changes['field_name'];
-            if(in_array($field, array('date_modified', 'modified_user_id', 'modified_by_name'))) {
-                continue;
+        $this->setBean($bean);
+        $this->_beforeSave($event);
+    }
+
+    protected function _beforeSave($event) {
+        if($this->fieldsMode == self::MODE_DEFAULT_DISABLED) {
+            $enabledFields = $this->getEnabledFields();
+            $diff = $this->bean->db->getDataChanges($this->bean);
+            foreach($diff as $changes) {
+                $field = $changes['field_name'];
+                if(in_array($field, array('date_modified', 'modified_user_id', 'modified_by_name'))) {
+                    continue;
+                }
+                if(in_array($field, $enabledFields)) {
+                    continue;
+                }
+                $this->bean->$field = $changes['before'];
+                $GLOBALS['log']->warn("SecurityForms: {$bean->module_name} field $field change canseled");
             }
-            if(in_array($field, $enabledFields)) {
-                continue;
+        }
+    }
+
+    /**
+     * Хук на событие before_relationship_add или before_relationship_delete.
+     * Останавливает выполнение, если совершается недопустимое изменение связи.
+     */
+    public function beforeRelationshipSave($bean, $event, $arguments) {
+        $this->setBean($bean);
+        $this->_beforeRelationshipSave($event, $arguments);
+    }
+
+    protected function _beforeRelationshipSave($event, $arguments) {
+        $fieldDefs = $this->bean->getFieldDefinitions();
+        if($this->relationshipsMode == self::MODE_DEFAULT_ENABLED) {
+            $disabledRelationships = $this->getDisabledRelationships();
+            if(in_array($arguments['link'], $disabledRelationships)) {
+                $changed = true;
+                if (isset($this->bean->relationship_fields) && is_array($this->bean->relationship_fields)) {
+                    foreach ($this->bean->relationship_fields as $id => $rel_name) {
+                        if($rel_name != $arguments['link']) {
+                            continue;
+                        }
+                        if(!empty($this->bean->$id)) {
+                            if($this->bean->rel_fields_before_value[$id] == $this->bean->$id) {
+                                $changed = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if($changed) {
+                    sugar_die('Связь не может быть изменена: '.$arguments['link']);
+                }
             }
-            $bean->$field = $changes['before'];
-            $GLOBALS['log']->info("SecurityForms: {$bean->module_name} field $field change canseled");
-        }*/
-        //TODO: undo relationship delete/add
-        //TODO: while relationship not canseled, audit canceled, that's bad
+        }
     }
 
     protected function getVersionedScript() {
@@ -130,7 +209,6 @@ ul.sf-select li {
     lab321.sform.disableForm('EditView', ".json_encode($enabledFields).");
 </script>
 "; //TODO: disable emailAddressesTable, radio buttons?
-//TODO: disable after ajaxui frame
     }
 
     protected function isEditView() {
@@ -141,5 +219,9 @@ ul.sf-select li {
             return true;
         }
         return false;
+    }
+
+    protected function loadBeanFromRequest() {
+        return isset($_REQUEST['module']) && isset($_REQUEST['record']) ? BeanFactory::getBean($_REQUEST['module'], $_REQUEST['record']) : null;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-$viewdefs ['FormFieldsScenarios'] = array (  'DetailView' => 
+$viewdefs ['FormFieldsLists'] = array (  'DetailView' => 
   array (
     'templateMeta' => array (
       'form' => array (
@@ -26,9 +26,13 @@ $viewdefs ['FormFieldsScenarios'] = array (  'DetailView' =>
 
     'panels' => array (
       'lbl_information' => array (
-        array('name'),
-        array('uniq_name'),
-        array('sf_module'),
+        array('name', 'list_type'),
+        array(
+            array(
+                'name' => 'parent_name',
+                'customLabel' => '{sugar_translate label=\'LBL_MODULE_NAME\' module=$fields.parent_type.value}',
+              ),
+        )
       ),
     ),
   ),

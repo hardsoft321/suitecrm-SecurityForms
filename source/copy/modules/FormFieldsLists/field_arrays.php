@@ -1,7 +1,7 @@
 <?php
 if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 
-$fields_array['FormField'] = array (
+$fields_array['FormFieldList'] = array (
 
   'column_fields' => array(
     "id",

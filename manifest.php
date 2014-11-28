@@ -16,7 +16,7 @@ $manifest = array (
   'published_date' => '2014-11-21',
   'type' => 'module',
   'remove_tables' => 'prompt',
-  'version' => '0.0.1',
+  'version' => '0.0.2',
 );
 
 $installdefs = array (
@@ -30,9 +30,9 @@ $installdefs = array (
       'tab' => true,
     ),
     array (
-      'module' => 'FormFieldsScenarios',
-      'class' => 'FormFieldsScenario',
-      'path' => 'modules/FormFieldsScenarios/FormFieldsScenario.php',
+      'module' => 'FormFieldsLists',
+      'class' => 'FormFieldsList',
+      'path' => 'modules/FormFieldsLists/FormFieldsList.php',
       'tab' => true,
     ),
   ),

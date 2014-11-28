@@ -8,16 +8,10 @@ $listViewDefs['FormFields'] = array(
     'link' => true,
     'default' => true,
   ),
-  'SCENARIO_ID' => array(
+  'LIST_NAME' => array(
     'width' => '40',
-    'label' => 'LBL_LIST_SCENARIO',
+    'label' => 'LBL_LIST',
     'link' => true,
-    'default' => true,
-  ),
-  'SF_MODULE' => array(
-    'width' => '40',
-    'label' => 'LBL_LIST_MODULE',
-    'link' => false,
     'default' => true,
   ),
 );

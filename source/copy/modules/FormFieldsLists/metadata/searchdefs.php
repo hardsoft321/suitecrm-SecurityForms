@@ -1,6 +1,6 @@
 <?php
 
-$searchdefs ['FormFieldsScenarios'] = array ( 
+$searchdefs ['FormFieldsLists'] = array ( 
   'templateMeta' => 
   array (
     'maxColumns' => '3',
@@ -18,8 +18,14 @@ $searchdefs ['FormFieldsScenarios'] = array (
     ),
     'advanced_search' => array (
       'name' => array('name'=>'name','query_type'=>'default'),
-      'sf_module' => array('name'=>'sf_module','query_type'=>'default'),
-      'uniq_name' => array('name'=>'uniq_name','query_type'=>'default'),
+      'list_type' => array('name'=>'list_type','query_type'=>'default'),
+      'parent_name' => array (
+        'type' => 'parent',
+        'label' => 'LBL_LIST_RELATED_TO',
+        'width' => '10%',
+        'default' => true,
+        'name' => 'parent_name',
+      ),
     ),
   ),
 );

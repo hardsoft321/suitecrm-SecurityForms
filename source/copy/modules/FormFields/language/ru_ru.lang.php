@@ -20,7 +20,6 @@ $mod_strings = array (
 'LBL_EXPORT_NAME' => 'Поле',
 'LBL_EXPORT_MODULE' => 'Модуль',
 
-'LBL_SCENARIO' => 'Сценарий',
-'LBL_LIST_SCENARIO' => 'Сценарий',
+'LBL_LIST' => 'Список',
 );
 ?>

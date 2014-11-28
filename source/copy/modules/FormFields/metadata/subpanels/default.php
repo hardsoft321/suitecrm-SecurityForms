@@ -12,10 +12,6 @@ $subpanel_layout = array(
             'widget_class' => 'SubPanelDetailViewLink',
             'width' => '70%',
         ),
-        'sf_module'=>array(
-            'vname' => 'LBL_MODULE',
-            'width' => '15%',
-        ),
     ),
 );
 ?>

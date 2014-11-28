@@ -1,6 +1,6 @@
 <?php
 
-$viewdefs ['FormFieldsScenarios'] = array ( 'EditView' => 
+$viewdefs ['FormFieldsLists'] = array ( 'EditView' => 
   array (
     'templateMeta' => array (
       'form' =>  array (
@@ -25,8 +25,8 @@ $viewdefs ['FormFieldsScenarios'] = array ( 'EditView' =>
     'panels' => array (
       'lbl_information' => array (
         array('name'),
-        array('uniq_name'),
-        array('sf_module'),
+        array('list_type'),
+        array('parent_name'),
       ),
     ),
   ),

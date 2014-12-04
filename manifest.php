@@ -16,7 +16,7 @@ $manifest = array (
   'published_date' => '2014-11-21',
   'type' => 'module',
   'remove_tables' => 'prompt',
-  'version' => '0.0.2',
+  'version' => '0.0.2.1',
 );
 
 $installdefs = array (

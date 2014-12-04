@@ -125,21 +125,26 @@ class SecurityForm {
     }
 
     protected function _beforeSave($event) {
+        $diff = $this->getDataChangesToUnset($this->bean);
+        foreach($diff as $changes) {
+            $this->bean->$field = $changes['before'];
+            $GLOBALS['log']->warn("SecurityForms: {$this->bean->module_name} field $field change canseled");
+        }
+    }
+
+    protected function getDataChangesToUnset($bean) {
+        $diff = array();
         if($this->fieldsMode == self::MODE_DEFAULT_DISABLED) {
             $enabledFields = $this->getEnabledFields();
-            $diff = $this->bean->db->getDataChanges($this->bean);
-            foreach($diff as $changes) {
-                $field = $changes['field_name'];
-                if(in_array($field, array('date_modified', 'modified_user_id', 'modified_by_name'))) {
-                    continue;
+            $dbDiff = $bean->db->getDataChanges($bean);
+            foreach($dbDiff as $field => $changes) {
+                if(!in_array($field, array('date_modified', 'modified_user_id', 'modified_by_name'))
+                    && !in_array($field, $enabledFields)) {
+                    $diff[$field] = $dbDiff[$field];
                 }
-                if(in_array($field, $enabledFields)) {
-                    continue;
-                }
-                $this->bean->$field = $changes['before'];
-                $GLOBALS['log']->warn("SecurityForms: {$bean->module_name} field $field change canseled");
             }
         }
+        return $diff;
     }
 
     /**

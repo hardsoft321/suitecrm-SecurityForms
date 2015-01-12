@@ -125,11 +125,12 @@ class SecurityForm {
     }
 
     protected function _beforeSave($event) {
-/*        $diff = $this->getDataChangesToUnset($this->bean); //пока не работают переходы, закомментируем
+        $diff = $this->getDataChangesToUnset($this->bean);
         foreach($diff as $changes) {
+            $field = $changes['field_name'];
             $this->bean->$field = $changes['before'];
             $GLOBALS['log']->warn("SecurityForms: {$this->bean->module_name} field $field change canseled");
-        }*/
+        }
     }
 
     protected function getDataChangesToUnset($bean) {

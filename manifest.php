@@ -2,7 +2,7 @@
 
 $README = <<<RDME
 Библиотека запрета на доступ к полям форм.
-Модули "Поля форм", "Сценарии форм".
+Модули "FormFieldsLists", "FormFields".
 RDME;
 
 $manifest = array (
@@ -16,7 +16,7 @@ $manifest = array (
   'published_date' => '2015-04-28',
   'type' => 'module',
   'remove_tables' => 'prompt',
-  'version' => '0.0.2.3',
+  'version' => '0.0.3',
 );
 
 $installdefs = array (

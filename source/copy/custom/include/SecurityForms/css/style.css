@@ -1,0 +1,16 @@
+input.sf-disabled, textarea.sf-disabled, ul.sf-select {
+    color: #717171;
+    background-color: #f6f6f6;
+}
+ul.sf-select {
+    border: 1px solid;
+    border-color: #94C1E8;
+    display: inline-block;
+    min-height: 15px;
+    margin: 0;
+    padding-left: 0;
+    padding-right:6px;
+}
+ul.sf-select li {
+    margin: 1px 3px;
+}

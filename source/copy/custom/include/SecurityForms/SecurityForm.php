@@ -5,7 +5,7 @@ class SecurityForm {
      * Версия js-файлов.
      * Изменить после обновления js.
      */
-    const JS_CUSTOM_VERSION = '0.0.1';
+    const JS_CUSTOM_VERSION = '0.0.2';
 
     /**
      * По умолчанию скрывать всю форму
@@ -183,30 +183,31 @@ class SecurityForm {
         }
     }
 
+    /**
+     * Хук на событие before_delete бина.
+     * Если поля по умолчанию запрещено редактировать, то и удалить запись нельзя.
+     */
+    public function beforeDelete($bean, $event) {
+        $this->setBean($bean);
+        $this->_beforeDelete($event);
+    }
+
+    protected function _beforeDelete() {
+        if($this->fieldsMode == self::MODE_DEFAULT_DISABLED) {
+            if(!empty($this->bean->name)) {
+                echo $this->bean->name;
+            }
+            ACLController::displayNoAccess(true);
+            sugar_cleanup(true);
+        }
+    }
+
     protected function getVersionedScript() {
         return getVersionedScript('custom/include/SecurityForms/js/securityforms.js', self::JS_CUSTOM_VERSION);
     }
 
     protected function getStyle() {
-        return "
-<style>
-input.sf-disabled, textarea.sf-disabled, ul.sf-select {
-    color: #717171;
-    background-color: #f6f6f6;
-}
-ul.sf-select {
-    border: 1px solid;
-    border-color: #94C1E8;
-    display: inline-block;
-    min-height: 15px;
-    margin: 0;
-    padding-left: 0;
-    padding-right:6px;
-}
-ul.sf-select li {
-    margin: 1px 3px;
-}
-</style>";
+        return '<link rel="stylesheet" type="text/css" href="'.getVersionedPath('custom/include/SecurityForms/css/style.css').'">';
     }
 
     protected function getDisableFormJs($enabledFields) {
@@ -228,6 +229,7 @@ ul.sf-select li {
     }
 
     protected function loadBeanFromRequest() {
-        return isset($_REQUEST['module']) && isset($_REQUEST['record']) ? BeanFactory::getBean($_REQUEST['module'], $_REQUEST['record']) : null;
+        return isset($_REQUEST['module']) && isset($_REQUEST['record']) && (empty($_REQUEST['isDuplicate']) || $_REQUEST['isDuplicate'] == 'false')
+            ? BeanFactory::getBean($_REQUEST['module'], $_REQUEST['record']) : null;
     }
 }

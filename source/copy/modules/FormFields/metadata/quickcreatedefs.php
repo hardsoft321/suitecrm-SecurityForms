@@ -1,13 +1,12 @@
 <?php
 
-$viewdefs ['FormFields'] = array (  'DetailView' => 
+$viewdefs ['FormFields'] = array ( 'QuickCreate' => 
   array (
     'templateMeta' => array (
-      'form' => array (
+      'form' =>  array (
         'buttons' => array (
-           'EDIT',
-           'DUPLICATE',
-           'DELETE',
+           'SAVE',
+           'CANCEL',
         ),
       ),
       'maxColumns' => '2',
@@ -23,11 +22,9 @@ $viewdefs ['FormFields'] = array (  'DetailView' =>
       ),
       'useTabs' => false,
     ),
-
     'panels' => array (
       'lbl_information' => array (
         array('name', 'list_name'),
-        array('description'),
       ),
     ),
   ),

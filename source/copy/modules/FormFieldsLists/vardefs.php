@@ -31,6 +31,7 @@ $dictionary['FormFieldsList'] = array(
             'type'=>'parent',
             'group'=>'parent_name',
             'source'=>'non-db',
+            'options' => 'fflist_parent_type_display',
         ),
         'parent_id' => array (
             'name' => 'parent_id',

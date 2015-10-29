@@ -13,6 +13,9 @@ $listViewDefs['FormFields'] = array(
     'label' => 'LBL_LIST',
     'link' => true,
     'default' => true,
+    'id' => 'LIST_ID',
+    'module' => 'FormFieldsLists',
+    'related_fields' => array('list_id'),
   ),
 );
 ?>

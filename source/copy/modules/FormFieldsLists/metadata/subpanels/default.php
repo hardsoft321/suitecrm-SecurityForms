@@ -4,6 +4,12 @@ if(!defined('sugarEntry') || !sugarEntry) die('Not A Valid Entry Point');
 $subpanel_layout = array(
 
     'top_buttons' => array(
+        array (
+            'widget_class'=>'SubPanelTopButtonQuickCreate',
+        ),
+        array (
+            'widget_class'=>'SubPanelTopSelectButton', 'popup_module' => 'FormFieldsLists'
+        ),
     ),
     'where' => '',
     'list_fields' => array(
@@ -12,8 +18,8 @@ $subpanel_layout = array(
             'widget_class' => 'SubPanelDetailViewLink',
             'width' => '70%',
         ),
-        'parent_type'=>array(
-            'vname' => 'LBL_PARENT_NAME',
+        'list_type'=>array(
+            'vname' => 'LBL_LIST_TYPE',
             'width' => '15%',
         ),
     ),

@@ -8,6 +8,7 @@ $mod_strings = array (
 'LBL_SEARCH_FORM_TITLE' => 'Список полей форм' ,
 'LBL_LIST_FORM_TITLE' => 'Список полей форм' ,
 'LBL_NEW_FORM_TITLE' => 'Добавить поле форм' ,
+'LBL_FIELDS_SUBPANEL_TITLE' => 'Поля',
 
 'LBL_INFORMATION' => 'Основная информация' ,
 

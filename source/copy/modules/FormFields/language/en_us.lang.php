@@ -8,6 +8,7 @@ $mod_strings = array (
 'LBL_SEARCH_FORM_TITLE' => 'List of Form Fields' ,
 'LBL_LIST_FORM_TITLE' => 'List of Form Fields' ,
 'LBL_NEW_FORM_TITLE' => 'Add Form Field' ,
+'LBL_FIELDS_SUBPANEL_TITLE' => 'Fields',
 
 'LBL_INFORMATION' => 'Information' ,
 

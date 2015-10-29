@@ -193,6 +193,10 @@ class SecurityForm {
     }
 
     protected function _beforeDelete() {
+        global $current_user;
+        if($current_user->isAdmin()) {
+            return;
+        }
         if($this->fieldsMode == self::MODE_DEFAULT_DISABLED) {
             if(!empty($this->bean->name)) {
                 echo $this->bean->name;

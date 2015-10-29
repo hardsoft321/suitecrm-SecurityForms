@@ -23,11 +23,9 @@ class FormFieldsList extends SugarBean {
     public $parent_type;
     public $parent_name;
 
-    function bean_implements($interface){
-        switch($interface){
-            case 'ACL':return true;
-        }
-        return false;
+    function ACLAccess($view,$is_owner='not_set')
+    {
+        return $GLOBALS['current_user']->isAdmin();
     }
 
     /**

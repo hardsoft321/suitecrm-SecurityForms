@@ -16,24 +16,28 @@ $manifest = array (
   'published_date' => '2015-04-28',
   'type' => 'module',
   'remove_tables' => 'prompt',
-  'version' => '0.0.3',
+  'version' => '0.0.4',
 );
-
 $installdefs = array (
   'id' => 'SecurityForms',
+  'administration' => array(
+    array(
+      'from'=>'<basepath>/source/administration/SecurityForms.php',
+    ),
+  ),
   'beans' =>
   array (
     array (
       'module' => 'FormFields',
       'class' => 'FormField',
       'path' => 'modules/FormFields/FormField.php',
-      'tab' => true,
+      'tab' => false,
     ),
     array (
       'module' => 'FormFieldsLists',
       'class' => 'FormFieldsList',
       'path' => 'modules/FormFieldsLists/FormFieldsList.php',
-      'tab' => true,
+      'tab' => false,
     ),
   ),
 	'language' => array(
@@ -47,6 +51,16 @@ $installdefs = array (
 			'to_module' => 'application',
 			'language' => 'ru_ru',
 		),
+    array(
+      'from'=> '<basepath>/language/modules/Administration/mod_strings_ru_ru.php',
+      'to_module'=> 'Administration',
+      'language'=>'ru_ru'
+    ),
+    array(
+      'from'=> '<basepath>/language/modules/Administration/mod_strings_en_us.php',
+      'to_module'=> 'Administration',
+      'language'=>'en_us'
+    ),
   ),
   'copy' => array (
     array(

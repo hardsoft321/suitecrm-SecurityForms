@@ -149,7 +149,6 @@ class SecurityForm {
         $diff = array();
         $enabledFields = $this->fieldsMode == self::MODE_DEFAULT_DISABLED ? $this->getEnabledFields() : null;
         $disabledFields = $this->fieldsMode == self::MODE_DEFAULT_ENABLED ? $this->getDisabledFields() : null;
-        var_dump($disabledFields);
         $dbDiff = $bean->db->getDataChanges($bean);
         foreach($dbDiff as $field => $changes) {
             if(!in_array($field, array('date_modified', 'modified_user_id', 'modified_by_name'))
@@ -237,7 +236,7 @@ class SecurityForm {
     protected function getDisableFormJs($enabledFields) {
         return "
 <script type=\"text/javascript\">
-    lab321.sform.disableForm('EditView', ".json_encode($enabledFields).");
+    lab321.sform.disableForm('EditView', ".json_encode(array_values($enabledFields)).");
 </script>
 ";
     }
@@ -245,7 +244,7 @@ class SecurityForm {
     protected function getDisableFieldsJs($disabledFields) {
         return "
 <script type=\"text/javascript\">
-    lab321.sform.disableFields('EditView', ".json_encode($disabledFields).");
+    lab321.sform.disableFields('EditView', ".json_encode(array_values($disabledFields)).");
 </script>
 ";
     }

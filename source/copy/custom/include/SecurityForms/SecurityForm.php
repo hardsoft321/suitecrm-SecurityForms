@@ -1,4 +1,11 @@
 <?php
+/**
+ * @license http://hardsoft321.org/license/ GPLv3
+ * @author Evgeny Pervushin <pea@lab321.ru>
+ * @package SecurityForms
+ */
+require_once 'custom/include/SecurityForms/ReadOnlySugarEmailAddress.php';
+
 class SecurityForm {
 
     /**
@@ -100,16 +107,21 @@ class SecurityForm {
             $this->setBean($bean);
         }
         if($this->fieldsMode == self::MODE_DEFAULT_ENABLED) {
-            //TODO: realize MODE_DEFAULT_ENABLED support
-            return '';
+            $disabledFields = $this->getDisabledFields();
+            if(empty($disabledFields)) {
+                return '';
+            }
+            return $this->getStyle()
+                .$this->getVersionedScript()
+                .$this->getDisableFieldsJs($disabledFields);
         }
-        $enabledFields = array();
         if($this->fieldsMode == self::MODE_DEFAULT_DISABLED) {
             $enabledFields = $this->getEnabledFields();
+            return $this->getStyle()
+                .$this->getVersionedScript()
+                .$this->getDisableFormJs($enabledFields);
         }
-        return $this->getStyle()
-            .$this->getVersionedScript()
-            .$this->getDisableFormJs($enabledFields);
+        return '';
     }
 
     /**
@@ -129,21 +141,29 @@ class SecurityForm {
         foreach($diff as $changes) {
             $field = $changes['field_name'];
             $this->bean->$field = $changes['before'];
-            $GLOBALS['log']->warn("SecurityForms: {$this->bean->module_name} field $field change canseled");
+            $GLOBALS['log']->warn("SecurityForms: {$this->bean->module_name} field $field change canceled");
         }
     }
 
     protected function getDataChangesToUnset($bean) {
         $diff = array();
-        if($this->fieldsMode == self::MODE_DEFAULT_DISABLED) {
-            $enabledFields = $this->getEnabledFields();
-            $dbDiff = $bean->db->getDataChanges($bean);
-            foreach($dbDiff as $field => $changes) {
-                if(!in_array($field, array('date_modified', 'modified_user_id', 'modified_by_name'))
-                    && !in_array($field, $enabledFields)) {
-                    $diff[$field] = $dbDiff[$field];
-                }
+        $enabledFields = $this->fieldsMode == self::MODE_DEFAULT_DISABLED ? $this->getEnabledFields() : null;
+        $disabledFields = $this->fieldsMode == self::MODE_DEFAULT_ENABLED ? $this->getDisabledFields() : null;
+        var_dump($disabledFields);
+        $dbDiff = $bean->db->getDataChanges($bean);
+        foreach($dbDiff as $field => $changes) {
+            if(!in_array($field, array('date_modified', 'modified_user_id', 'modified_by_name'))
+                && (   ($this->fieldsMode == self::MODE_DEFAULT_DISABLED && !in_array($field, $enabledFields))
+                    || ($this->fieldsMode == self::MODE_DEFAULT_ENABLED  && in_array($field, $disabledFields))   ))
+            {
+                $diff[$field] = $dbDiff[$field];
             }
+        }
+        if(!empty($bean->emailAddress) && !in_array('emailAddress', $enabledFields)) {
+            $diff['emailAddress'] = array(
+                'field_name' => 'emailAddress',
+                'before' => new ReadOnlySugarEmailAddress(),
+            );
         }
         return $diff;
     }
@@ -219,7 +239,15 @@ class SecurityForm {
 <script type=\"text/javascript\">
     lab321.sform.disableForm('EditView', ".json_encode($enabledFields).");
 </script>
-"; //TODO: disable emailAddressesTable, radio buttons?
+";
+    }
+
+    protected function getDisableFieldsJs($disabledFields) {
+        return "
+<script type=\"text/javascript\">
+    lab321.sform.disableFields('EditView', ".json_encode($disabledFields).");
+</script>
+";
     }
 
     protected function isEditView() {

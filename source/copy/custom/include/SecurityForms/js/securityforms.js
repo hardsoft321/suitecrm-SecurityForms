@@ -38,6 +38,7 @@ lab321.sform.disableElement = function(elem) {
     if(x.is(':checkbox'))
         x.attr('disabled', 'disabled');
     $('#btn_'+elem.id+', #btn_clr_'+elem.id).attr('disabled', 'disabled');
+    $(x).closest('td').find('#remove_button').attr('disabled', 'disabled');
     if(x.is('select')) {
         var ul = $('<ul id="sf-'+elem.name+'" class="sf-select"></ul>').insertAfter(x);
         x.hide().find('option:selected').each(function() {
@@ -49,9 +50,6 @@ lab321.sform.disableElement = function(elem) {
 
 lab321.sform.disableEmailAddress = function(formId) {
     if(typeof SUGAR.EmailAddressWidget === "undefined") {
-        if(typeof console !== "undefined") {
-            console.error("No SUGAR.EmailAddressWidget");
-        }
         return;
     }
     SUGAR.EmailAddressWidget.prototype.prefillEmailAddresses_orig = SUGAR.EmailAddressWidget.prototype.prefillEmailAddresses;

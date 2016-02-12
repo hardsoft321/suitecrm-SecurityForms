@@ -12,7 +12,7 @@ class SecurityForm {
      * Версия js-файлов.
      * Изменить после обновления js.
      */
-    const JS_CUSTOM_VERSION = '0.0.2';
+    const JS_CUSTOM_VERSION = '0.0.3';
 
     /**
      * По умолчанию скрывать всю форму
@@ -148,6 +148,9 @@ class SecurityForm {
 
     protected function getDataChangesToUnset($bean) {
         $diff = array();
+        if(is_admin($GLOBALS['current_user']) && !empty($_POST['allowAllFieldsSave'])) {
+            return $diff;
+        }
         $enabledFields = $this->fieldsMode == self::MODE_DEFAULT_DISABLED ? $this->getEnabledFields() : null;
         $disabledFields = $this->fieldsMode == self::MODE_DEFAULT_ENABLED ? $this->getDisabledFields() : null;
         $dbDiff = $bean->db->getDataChanges($bean);
@@ -159,7 +162,10 @@ class SecurityForm {
                 $diff[$field] = $dbDiff[$field];
             }
         }
-        if(!empty($bean->emailAddress) && !in_array('emailAddress', $enabledFields)) {
+        if(!empty($bean->emailAddress)
+            && (   ($this->fieldsMode == self::MODE_DEFAULT_DISABLED && !in_array('emailAddress', $enabledFields))
+                    || ($this->fieldsMode == self::MODE_DEFAULT_ENABLED  && in_array('emailAddress', $disabledFields))   ))
+        {
             $diff['emailAddress'] = array(
                 'field_name' => 'emailAddress',
                 'before' => new ReadOnlySugarEmailAddress(),
@@ -235,17 +241,31 @@ class SecurityForm {
     }
 
     protected function getDisableFormJs($enabledFields) {
+        $is_admin = is_admin($GLOBALS['current_user']);
         return "
 <script type=\"text/javascript\">
+var is_admin = '$is_admin';
+if(is_admin && confirm('{$GLOBALS['app_strings']['MSG_ALLOW_ALL_FIELDS_SAVE']}')) {
+    lab321.sform.allowAllFieldsSave('EditView');
+}
+else {
     lab321.sform.disableForm('EditView', ".json_encode(array_values($enabledFields)).");
+}
 </script>
 ";
     }
 
     protected function getDisableFieldsJs($disabledFields) {
+        $is_admin = is_admin($GLOBALS['current_user']);
         return "
 <script type=\"text/javascript\">
+var is_admin = '$is_admin';
+if(is_admin && confirm('{$GLOBALS['app_strings']['MSG_ALLOW_ALL_FIELDS_SAVE']}')) {
+    lab321.sform.allowAllFieldsSave('EditView');
+}
+else {
     lab321.sform.disableFields('EditView', ".json_encode(array_values($disabledFields)).");
+}
 </script>
 ";
     }

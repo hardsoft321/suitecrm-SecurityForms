@@ -31,6 +31,10 @@ lab321.sform.disableFields = function(formId, disabledFields) {
     }
 }
 
+lab321.sform.allowAllFieldsSave = function(formId) {
+    $('#'+formId).append($('<input type="hidden" name="allowAllFieldsSave" value="1">'));
+}
+
 lab321.sform.disableElement = function(elem) {
     var x = $(elem);
     var img = $('img#'+elem.id+'_trigger:visible:not(.sf-dummy-trigger)');

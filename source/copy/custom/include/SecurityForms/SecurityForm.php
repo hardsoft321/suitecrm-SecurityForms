@@ -12,7 +12,7 @@ class SecurityForm {
      * Версия js-файлов.
      * Изменить после обновления js.
      */
-    const JS_CUSTOM_VERSION = '0.0.3';
+    const JS_CUSTOM_VERSION = '0.0.4';
 
     /**
      * По умолчанию скрывать всю форму
@@ -244,13 +244,8 @@ class SecurityForm {
         $is_admin = is_admin($GLOBALS['current_user']);
         return "
 <script type=\"text/javascript\">
-var is_admin = '$is_admin';
-if(is_admin && confirm('{$GLOBALS['app_strings']['MSG_ALLOW_ALL_FIELDS_SAVE']}')) {
-    lab321.sform.allowAllFieldsSave('EditView');
-}
-else {
+    lab321.sform.isAdmin = '$is_admin';
     lab321.sform.disableForm('EditView', ".json_encode(array_values($enabledFields)).");
-}
 </script>
 ";
     }
@@ -259,13 +254,8 @@ else {
         $is_admin = is_admin($GLOBALS['current_user']);
         return "
 <script type=\"text/javascript\">
-var is_admin = '$is_admin';
-if(is_admin && confirm('{$GLOBALS['app_strings']['MSG_ALLOW_ALL_FIELDS_SAVE']}')) {
-    lab321.sform.allowAllFieldsSave('EditView');
-}
-else {
+    lab321.sform.isAdmin = '$is_admin';
     lab321.sform.disableFields('EditView', ".json_encode(array_values($disabledFields)).");
-}
 </script>
 ";
     }
@@ -281,7 +271,7 @@ else {
     }
 
     protected function loadBeanFromRequest() {
-        return isset($_REQUEST['module']) && isset($_REQUEST['record']) && (empty($_REQUEST['isDuplicate']) || $_REQUEST['isDuplicate'] == 'false')
-            ? BeanFactory::getBean($_REQUEST['module'], $_REQUEST['record']) : null;
+        return isset($_REQUEST['module']) && (empty($_REQUEST['isDuplicate']) || $_REQUEST['isDuplicate'] == 'false')
+            ? BeanFactory::getBean($_REQUEST['module'], isset($_REQUEST['record']) ? $_REQUEST['record'] : null) : null;
     }
 }

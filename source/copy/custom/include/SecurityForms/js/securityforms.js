@@ -17,6 +17,9 @@ lab321.sform.disableForm = function(formId, enabledFields) {
     if(enabledFields.indexOf('emailAddress') == -1) {
         lab321.sform.disableEmailAddress(formId);
     }
+    if(lab321.sform.isAdmin) {
+        lab321.sform.showEnableDialog('MODE_DEFAULT_DISABLED', formId, enabledFields, null);
+    }
 }
 
 lab321.sform.disableFields = function(formId, disabledFields) {
@@ -29,10 +32,16 @@ lab321.sform.disableFields = function(formId, disabledFields) {
     if(disabledFields.indexOf('emailAddress') >= 0) {
         lab321.sform.disableEmailAddress(formId);
     }
+    if(lab321.sform.isAdmin) {
+        lab321.sform.showEnableDialog('MODE_DEFAULT_ENABLED', formId, null, disabledFields);
+    }
 }
 
 lab321.sform.allowAllFieldsSave = function(formId) {
     $('#'+formId).append($('<input type="hidden" name="allowAllFieldsSave" value="1">'));
+}
+lab321.sform.disallowAllFieldsSave = function(formId) {
+    $('#'+formId+' input[name="allowAllFieldsSave"]').remove();
 }
 
 lab321.sform.disableElement = function(elem) {
@@ -94,4 +103,44 @@ lab321.sform.enableForm = function(formId, disabledFields) {
         }
         x.removeAttr('readOnly').removeClass('sf-disabled');
     });
+}
+
+lab321.sform.showEnableDialog = function(mode, formId, enabledFields, disabledFields) {
+    if($('.enable-dialog').length)
+        return;
+    $('<div class="enable-dialog">\
+<table>\
+  <tr>\
+    <td><span>'+SUGAR.language.get("app_strings", "MSG_ALLOW_ALL_FIELDS_SAVE")+'</span></td>\
+    <td class="buttons">\
+      <div class="onoffswitch">\
+        <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="sform-switch">\
+        <label class="onoffswitch-label" for="sform-switch">\
+          <span class="onoffswitch-inner"></span>\
+          <span class="onoffswitch-switch"></span>\
+        </label>\
+      </div>\
+    </td>\
+  </tr>\
+</table>\
+</div>')
+    .find('#sform-switch').change(function() {
+        lab321.sform.toggleForm($(this).is(':checked'), mode, formId, enabledFields, disabledFields);
+    })
+    .end()
+    .prependTo($('#'+formId+' #EditView_tabs').length ? $('#'+formId+' #EditView_tabs') : $('#'+formId));
+}
+
+lab321.sform.toggleForm = function(enable, mode, formId, enabledFields, disabledFields) {
+    if(enable) {
+        lab321.sform.enableForm(formId);
+        lab321.sform.allowAllFieldsSave(formId);
+    }
+    else {
+        if(mode == 'MODE_DEFAULT_ENABLED')
+            lab321.sform.disableFields(formId, disabledFields);
+        else if(mode == 'MODE_DEFAULT_DISABLED')
+            lab321.sform.disableForm(formId, enabledFields);
+        lab321.sform.disallowAllFieldsSave(formId);
+    }
 }

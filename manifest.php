@@ -16,7 +16,7 @@ $manifest = array (
   'published_date' => '2015-04-28',
   'type' => 'module',
   'remove_tables' => 'prompt',
-  'version' => '0.0.8',
+  'version' => '0.0.9',
 );
 $installdefs = array (
   'id' => 'SecurityForms',

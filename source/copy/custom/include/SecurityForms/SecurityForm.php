@@ -212,6 +212,7 @@ class SecurityForm {
     /**
      * Хук на событие before_delete бина.
      * Если поля по умолчанию запрещено редактировать, то и удалить запись нельзя.
+     * Если поле deleted указано среди disabled fields, то удалять нельзя
      */
     public function beforeDelete($bean, $event) {
         $this->setBean($bean);
@@ -223,7 +224,17 @@ class SecurityForm {
         if($current_user->isAdmin()) {
             return;
         }
+        $hasAccess = true;
         if($this->fieldsMode == self::MODE_DEFAULT_DISABLED) {
+            $hasAccess = false;
+        }
+        else {
+            $disabledFields = $this->getDisabledFields();
+            if(in_array('deleted', $disabledFields)) {
+                $hasAccess = false;
+            }
+        }
+        if(!$hasAccess) {
             if(!empty($this->bean->name)) {
                 echo $this->bean->name;
             }

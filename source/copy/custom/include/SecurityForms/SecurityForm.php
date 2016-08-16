@@ -133,6 +133,18 @@ class SecurityForm {
      * Удаление вложения (deleteAttachment) не отменяется этой функцией.
      */
     public function beforeSave($bean, $event) {
+        if($bean->fetched_row === false && !empty($bean->id)) {
+            /* Для таких модулей как ACLRoles, которые даже не делают retrieve перед сохранение
+             * сами заполним fetched_row. Использование BeanFactory здесь не работает. */
+            $beanClass = BeanFactory::getBeanName($bean->module_name);
+            if(!empty($beanClass) && class_exists($beanClass)) {
+                $copy = new $beanClass();
+                $copy = $copy->retrieve($bean->id);
+                if($copy) {
+                    $bean->fetched_row = $copy->fetched_row;
+                }
+            }
+        }
         $this->setBean($bean);
         $this->_beforeSave($event);
     }
@@ -214,7 +226,10 @@ class SecurityForm {
      * Если поля по умолчанию запрещено редактировать, то и удалить запись нельзя.
      * Если поле deleted указано среди disabled fields, то удалять нельзя
      */
-    public function beforeDelete($bean, $event) {
+    public function beforeDelete($bean, $event, $arguments) {
+        if(empty($bean->id) && !empty($arguments['id'])) {
+            $bean->id = $arguments['id'];
+        }
         $this->setBean($bean);
         $this->_beforeDelete($event);
     }
@@ -256,7 +271,7 @@ class SecurityForm {
         return "
 <script type=\"text/javascript\">
     lab321.sform.isAdmin = '$is_admin';
-    lab321.sform.disableForm('EditView', ".json_encode(array_values($enabledFields)).");
+    lab321.sform.disableForm('form[name=\"EditView\"]', ".json_encode(array_values($enabledFields)).");
 </script>
 ";
     }
@@ -266,7 +281,7 @@ class SecurityForm {
         return "
 <script type=\"text/javascript\">
     lab321.sform.isAdmin = '$is_admin';
-    lab321.sform.disableFields('EditView', ".json_encode(array_values($disabledFields)).");
+    lab321.sform.disableFields('form[name=\"EditView\"]', ".json_encode(array_values($disabledFields)).");
 </script>
 ";
     }

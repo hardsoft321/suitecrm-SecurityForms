@@ -133,6 +133,8 @@ class SecurityForm {
      * Удаление вложения (deleteAttachment) не отменяется этой функцией.
      */
     public function beforeSave($bean, $event) {
+       if (isset($bean->skipSecurityForms) && $bean->skipSecurityForms === true) return;
+
         if($bean->fetched_row === false && !empty($bean->id)) {
             /* Для таких модулей как ACLRoles, которые даже не делают retrieve перед сохранение
              * сами заполним fetched_row. Использование BeanFactory здесь не работает. */
@@ -145,6 +147,7 @@ class SecurityForm {
                 }
             }
         }
+
         $this->setBean($bean);
         $this->_beforeSave($event);
     }

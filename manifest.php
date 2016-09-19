@@ -13,10 +13,10 @@ $manifest = array (
   'author' => 'Hardsoft321',
   'description' => 'Модули полей',
   'is_uninstallable' => true,
-  'published_date' => '2015-04-28',
+  'published_date' => '2016-09-19',
   'type' => 'module',
   'remove_tables' => 'prompt',
-  'version' => '0.0.11',
+  'version' => '0.1.0',
 );
 $installdefs = array (
   'id' => 'SecurityForms',

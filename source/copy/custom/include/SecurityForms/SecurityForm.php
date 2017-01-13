@@ -98,6 +98,11 @@ class SecurityForm {
     public function afterUiFrame($event, $arguments) {
         if($this->isEditView()) {
             echo $this->getAfterEditView();
+            echo '<script>
+if (!lab321) var lab321 = {};
+if (!lab321.sform) lab321.sform = {};
+lab321.sform.done = true;
+</script>';
         }
     }
 

@@ -305,7 +305,8 @@ lab321.sform.done = true;
     }
 
     protected function loadBeanFromRequest() {
-        return isset($_REQUEST['module']) && (empty($_REQUEST['isDuplicate']) || $_REQUEST['isDuplicate'] == 'false')
-            ? BeanFactory::getBean($_REQUEST['module'], isset($_REQUEST['record']) ? $_REQUEST['record'] : null) : null;
+        return isset($_REQUEST['module'])
+            ? BeanFactory::getBean($_REQUEST['module'], isset($_REQUEST['record']) && (empty($_REQUEST['isDuplicate']) || $_REQUEST['isDuplicate'] == 'false')
+                ? $_REQUEST['record'] : null) : null;
     }
 }
